@@ -5,7 +5,6 @@ import * as ACTION_TYPE from '../action'
 
 export function* fetchPhoto(action) {
   try {
-    const { payload: data } = action;
     const resp = yield axios.get('https://jsonplaceholder.typicode.com/photos');
     if (resp.status === 200) {
       yield put(fetchSuccess(resp.data));
