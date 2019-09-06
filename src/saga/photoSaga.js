@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import * as ACTION_TYPE from '../action'
 
-function* fetchPhoto(action) {
+export function* fetchPhoto(action) {
   try {
     const { payload: data } = action;
     const resp = yield axios.get('https://jsonplaceholder.typicode.com/photos');
