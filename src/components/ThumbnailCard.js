@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReactHoverObserver from 'react-hover-observer';
+import Checkbox from 'rc-checkbox';
+import 'rc-checkbox/assets/index.css';
 
 import './index.css';
 
@@ -10,6 +12,8 @@ const ThumbnailCard = ({
   title,
   isSelected = false,
   onClick = (() => {}),
+  isFavourite = false,
+  onFavourite = ((isFavourite) => {})
 }) => {
 
   const [isHover, setIsHover] = useState(false);
@@ -17,6 +21,10 @@ const ThumbnailCard = ({
   const hoverChanged = ({ isHovering }) => {
     setIsHover(isHovering);
   };
+
+  const handleClickFavourite = event => {
+    onFavourite(event.target.checked);
+  }
 
   return (
     <ReactHoverObserver {...{
@@ -70,8 +78,16 @@ const ThumbnailCard = ({
             pointerEvents: 'none',
           }} />
         </div>
-        <div style={{display: 'flex', flexDirection: 'column', margin: '8px', cursor: 'pointer'}} onClick={onClick}>
-          <span style={{fontSize: '12px', maxWidth: 150}}>{title}</span>
+        <div style={{display: 'flex', flexDirection: 'column', margin: '8px', cursor: 'pointer'}}>
+          <span style={{ maxWidth: 150 }}>
+            <label style={{ fontSize: 12, display: 'flex', textAlign: 'left', cursor: 'pointer' }}>
+              <Checkbox
+                checked={isFavourite}
+                onChange={handleClickFavourite}
+              />
+              &nbsp;&nbsp;{title}
+            </label>
+          </span>
         </div>
       </div>
     </ReactHoverObserver>

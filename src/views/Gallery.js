@@ -14,7 +14,9 @@ const PAGE_SIZE = 20;
 const Gallery = ({
   photos = [],
   error = undefined,
+  favouriteCount = 0,
   dispatchFetchPhoto = (() => {}),
+  dispatchFavourite = ((index) => {})
 }) => {
 
   const [loading, setLoading]         = useState(false);
@@ -35,6 +37,7 @@ const Gallery = ({
   }
 
   const onSelect                      = (url) => (event) => setSelectedUrl(url);
+  const onFavourite                   = (index) => (isFavourite) => dispatchFavourite(index, isFavourite);
 
   useEffect(() => {
     if (!loading) {
@@ -55,11 +58,15 @@ const Gallery = ({
       <Waiting on={!loading}>
         {!loading &&
           <React.Fragment>
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+              <p>Number of your favourite images: &nbsp; &nbsp;</p>
+              <p>{favouriteCount}</p>
+            </div>
             <Preview imageUrl={selectedUrl} />
             <div className="thumbnails-container">
               <div className="thumbnails-content">
                 {pagePhotos.map((item, index) => {
-                  const { albumId, id, title, url, thumbnailUrl } = item;
+                  const { albumId, id, title, url, thumbnailUrl, isFavourite } = item;
                   const isSelected = (selectedUrl && selectedUrl === url);
                   return (
                     <ThumbnailCard
@@ -68,6 +75,8 @@ const Gallery = ({
                       title={title}
                       isSelected={isSelected}
                       onClick={onSelect(url)}
+                      isFavourite={isFavourite}
+                      onFavourite={onFavourite(index)}
                     />
                   )
                 })}
@@ -87,16 +96,24 @@ const mapStateToProps = state => {
   return {
     photos: photoReducer.photos,
     error: photoReducer.error,
+    favouriteCount: photoReducer.favouriteCount,
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    dispatchFetchPhoto: payload =>
+    dispatchFetchPhoto: ((payload) => {
       dispatch({
         type: ACTION_TYPE.FETCH_PHOTO,
         payload
       })
+    }),
+    dispatchFavourite: ((index, isFavourite) => {
+      dispatch({
+        type: ACTION_TYPE.SET_FAVOURITE,
+        payload: { index, isFavourite }
+      })
+    })
   };
 };
 
